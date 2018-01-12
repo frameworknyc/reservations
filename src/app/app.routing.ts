@@ -1,0 +1,89 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { HomeComponent, BookingComponent, ScheduleComponent, ReservationsComponent, ContactComponent, AboutComponent, UsersComponent, UserDetailComponent,
+  ProfileComponent, MyReservationsComponent, MyMessagesComponent, MyProfileComponent, TimesComponent } from "./containers/index";
+
+import {SharedModule} from "./shared/shared.module";
+
+import {CommonModule} from "@angular/common";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { AuthGuard } from './app.service'
+
+const routes: Routes = [
+  {
+    path: '',
+    component: TimesComponent
+  },
+  {
+    path: 'booking',
+    component: BookingComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'schedule',
+    component: ScheduleComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['admin'] }
+  },
+  // {
+  //   path: 'times',
+  //   component: TimesComponent,
+  //   canActivate: [AuthGuard],
+  //   data: { roles: ['admin'] }
+  // },
+  // {
+  //   path: 'times',
+  //   component: TimesComponent
+  // },
+  {
+    path: 'contact',
+    component: ContactComponent
+  },
+  {
+    path: 'about',
+    component: AboutComponent
+  },
+  {
+    path: 'reservations',
+    component: ReservationsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['admin'] }
+  },
+  {
+    path: 'users',
+    canActivate: [AuthGuard],
+    data: { roles: ['admin'] },
+    children: [
+      { path: '', component: UsersComponent},
+      { path: ':id', component: UserDetailComponent },
+    ]
+  },
+  // {
+  //   path: 'profile',
+  //   component: ProfileComponent,
+  //   canActivate: [AuthGuard],
+  //   children: [
+  //     { path: '', component: MyProfileComponent},
+  //     { path: 'reservations', component: MyReservationsComponent },
+  //     { path: 'messages', component: MyMessagesComponent },
+  //   ]
+  // },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '**',
+    component: HomeComponent
+  }
+];
+
+@NgModule({
+  imports: [ReactiveFormsModule, FormsModule, SharedModule, CommonModule, RouterModule.forRoot(routes)],
+  declarations: [HomeComponent, BookingComponent, ScheduleComponent, ReservationsComponent, ContactComponent, AboutComponent, UsersComponent, UserDetailComponent,
+    ProfileComponent, MyReservationsComponent, MyMessagesComponent, MyProfileComponent, TimesComponent],
+  exports: [RouterModule, HomeComponent, BookingComponent, ScheduleComponent, ReservationsComponent, ContactComponent, AboutComponent, UsersComponent, UserDetailComponent,
+    ProfileComponent, MyReservationsComponent, MyMessagesComponent, MyProfileComponent, TimesComponent]
+})
+export class AppRoutingModule { }

@@ -1,0 +1,48 @@
+<div class="streamItem-card streamItem-card--postPreview u-paddingRight20 u-paddingLeft20 u-borderRadius3">
+  <div class="streamItem-cardInner streamItem-cardInner--postPreview">
+    <div class="theme postArticle postArticle--short">
+      <div class="u-clearfix u-marginBottom10">
+        <div class=" u-floatLeft">
+          <div class="u-flexCenter">
+            <div class="postMetaInline-avatar u-flex0" *ngIf="showUserInfo">
+              <a class="link avatar u-baseColor--link" href="javascript:;">
+                <img alt="Go to the profile of"
+                     class="avatar-image u-size36x36 u-xs-size32x32"
+                     [src]="reservation?.client.avatar">
+              </a>
+            </div>
+            <div class="theme u-flex1 u-noWrapWithEllipsis">
+              <a
+                class="link link link--darken link--accent u-accentColor--textNormal u-accentColor--textDarken u-baseColor--link" *ngIf="showUserInfo">{{
+                reservation?.client.name }}
+              </a>
+              <div class="u-fontSize12 u-baseColor--textNormal u-textColorNormal">
+                <a class="link link--darken theme" href="#">
+                  <span>{{ reservation?.start | date: 'EEEE d' }} @ {{ reservation?.time | time}}</span>
+                </a>
+                <span class="middotDivider u-fontSize12"></span>
+                <span class="readingTime">for {{reservation?.reservation.type.type}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="u-marginLeft20 u-floatRight" *ngIf="showActionButton">
+          <span class="followState js-followState buttonSet-inner">
+            <div class="btn-group">
+              <button data-toggle="dropdown" class="button button--small u-noUserSelect button--withChrome u-baseColor--buttonNormal button--withHover button--unblock">{{currentStatus()}}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" style="left: -40px">
+                <li><a (click)="updateStatus(0)">Booked</a></li>
+                <li><a (click)="updateStatus(1)">Rescheduled</a></li>
+                <li><a (click)="updateStatus(2)">Completed</a></li>
+                <li><a (click)="updateStatus(3)">Cancelled</a></li>
+              </ul>
+            </div>
+
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
