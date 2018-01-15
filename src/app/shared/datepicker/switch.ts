@@ -11,6 +11,7 @@ const UI_SWITCH_CONTROL_VALUE_ACCESSOR: any = {
 @Component({
   selector: 'switch',
   template: `
+    <!--<p>{{ date | date:'yMMMMEEEEd'}}</p>-->
     <span class="switch"
     [class.checked]="checked"
     [class.disabled]="disabled"
@@ -23,11 +24,12 @@ const UI_SWITCH_CONTROL_VALUE_ACCESSOR: any = {
     <small [style.background]="getColor('switchColor')">
     </small>
     </span>
+
   `,
   styles: [`
     .switch {
     background: #f00;
-    border: 1px solid #dfdfdf;
+    border: 2px solid #dfdfdf;
     position: relative;
     display: inline-block;
     box-sizing: content-box;
@@ -38,6 +40,10 @@ const UI_SWITCH_CONTROL_VALUE_ACCESSOR: any = {
     box-shadow: rgb(223, 223, 223) 0 0 0 0 inset;
     transition: 0.3s ease-out all;
     -webkit-transition: 0.3s ease-out all;
+    }
+
+    :host {
+      text-align: center;
     }
 
     small {
@@ -114,12 +120,14 @@ export class SwitchComponent implements ControlValueAccessor {
   private _reverse: boolean;
 
   @Input() size = 'medium';
+  @Input() date;
+
   @Output() change = new EventEmitter<boolean>();
   @Input() color = '#6FDFAF';
   @Input() switchOffColor = '';
   @Input() switchColor = '#fff';
   @Input() defaultBgColor = '#fff';
-  @Input() defaultBoColor = '#dfdfdf';
+  @Input() defaultBoColor = '#D9D9E4';
 
   @Input() set checked(v: boolean) {
     this._checked = v !== false;
@@ -147,7 +155,7 @@ export class SwitchComponent implements ControlValueAccessor {
 
   getColor(flag = '') {
     if (flag === 'borderColor') {
-      return this.defaultBoColor;
+      return this.checked ? this.color : this.defaultBoColor;
     }
     if (flag === 'switchColor') {
       if (this.reverse) {

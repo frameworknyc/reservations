@@ -80,10 +80,10 @@ li {
 
 .active, .travel {
   opacity: 1;
-  background: #F5E2EE;
-  color: #384368 !important;
-  border: 0;
-  box-shadow: 0 0 0 1px #F5E2EE;
+  color: #FFF !important;
+  background-color: #35384C !important;
+  border-color: #35384C !important;
+  box-shadow: 0 0 0 1px #35384C;
 }
 
 .header {

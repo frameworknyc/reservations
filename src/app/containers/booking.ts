@@ -205,7 +205,6 @@ export class BookingComponent implements OnInit {
   }
 
   setDay() {
-    // console.log('today is', this.viewDate);
     this.reservationService.updateDay(this.viewDate);
   }
 

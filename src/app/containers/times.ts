@@ -19,7 +19,13 @@ import * as _ from 'lodash';
   template: `
   <div class='container u-maxWidth1040' style="padding-top: 6em;">
 
-    <view-switch [(view)]="view"></view-switch>
+  <header class="hero hero--standalone hero--compact hero--alignLeft u-clearfix u-maxWidth1040 u-flex">
+            <h1 class="hero-title u-flex1">Schedule</h1>
+
+            <view-switch class="u-flex0" [(view)]="view"></view-switch>
+
+        </header>
+
 
     <div class="" [ngSwitch]="view">
 
@@ -28,29 +34,26 @@ import * as _ from 'lodash';
     [weekdays]='weekdays'
     [selectedDay]='selectedDay'>
 
-    <hours
-        [times]='times'
+      <hours [times]='times'
         (block)="toggle($event, selectedDay)">
       </hours>
-      </tabs>
+    </tabs>
 
-      <div class="" *ngSwitchCase="'days'">
+      <div class="datepicker-container" *ngSwitchCase="'days'">
 
-
-
-        <pre>{{ selectedDate }}, {{ enable }}</pre>
-
+        <datepicker class="picker" [(ngModel)]="selectedDate" (ngModelChange)="handleDateChange($event)"></datepicker>
+        <div class="block">
         <p>{{ selectedDate | date:'yMMMMEEEEd'}}</p>
+        <switch defaultBgColor="#D9D9E4" (change)="dateToggle($event)" [checked]="enable" [date]="selectedDate"></switch>
+        <p style="margin-top:30px;">{{ enable? 'date is blocked' : 'date is open' }}</p>
 
-        <switch (change)="dateToggle()" reverse [checked]="enable"></switch>
+        </div>
 
-        <datepicker [(ngModel)]="selectedDate"></datepicker>
 
-        <datelist [dates]='dates | async' (select)='select($event)'></datelist>
 
+        <datelist class="list" [dates]='dates | async' (select)='select($event)'></datelist>
 
       </div>
-
 
     </div>
 
@@ -64,6 +67,90 @@ import * as _ from 'lodash';
   styles: [`
   .u-maxWidth1040 {
     max-width: 1040px!important
+ }
+ .block {
+   display: flex;
+   align-items: center;
+   /* justify-items: flex-start; */
+   flex-direction: column;
+   height: 275px;
+   padding-top: 6em;
+ }
+  .datepicker-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 100px
+    justify-content: center
+
+  }
+
+.hero {
+  text-align: center;
+  height: 500px
+}
+
+.hero-title {
+  font-family: "GT-Walsheim", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 34px;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  color: #35384C;
+  margin-bottom: 8px;
+  outline: 0;
+  word-break: break-word;
+  word-wrap: break-word
+}
+
+.hero--compact .hero-title {
+  float: left
+}
+
+.hero--alignLeft {
+  text-align: left
+}
+
+.hero--standalone {
+  padding-top: 100px;
+  padding-bottom: 40px;
+  height: auto;
+  display: flex;
+}
+
+@media screen and (max-width:767px) {
+  .hero--standalone {
+      padding: 0;
+      margin-bottom: 10px
+  }
+  .hero--standalone .hero-title {
+      font-size: 18px;
+      margin-left: -1.13px;
+      height: 44px;
+      line-height: 46px;
+      margin: 0 -6px 20px;
+      padding: 10px 0 10px;
+      text-align: left
+  }
+  .hero--standalone:after {
+      display: none
+  }
+  .hero--compact .hero-title,
+  .hero--compact.hero--standalone {
+      float: none;
+      margin-bottom: 18px;
+      margin-left: 0;
+  }
+}
+.u-flex {
+  display: -ms-flexbox!important;
+  display: flex!important
+}
+
+.u-flex1 {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto
 }
 
   `],
@@ -106,16 +193,18 @@ export class TimesComponent implements OnInit {
 
   ngOnInit() {
     this.slimLoadingBarService.start();
-    this.view = 'days';
+    this.view = 'times';
     this.dates = this.scheduleService.getBlackList();
 
     this.subscription = this.scheduleService.selectedDay$
        .subscribe(day => {
          this.selectedDay = day;
     });
+
     this.dateSubscription = this.scheduleService.selectedDate$
     .subscribe(date => {
       this.enable = this.findDate() ? true : false;
+      console.log('youre here')
       this.selectedDate = date;
     });
 
@@ -126,8 +215,8 @@ export class TimesComponent implements OnInit {
         });
       });
     this.getTimes(this.selectedDay);
-    // this.enable = this.isBlocked();
     this.enable = this.findDate() ? true : false;
+    console.log(this.enable)
 
     this.slimLoadingBarService.complete();
   }
@@ -153,9 +242,6 @@ export class TimesComponent implements OnInit {
     this.enable = !this.enable
   }
 
-  isBlocked() {
-    return this.datesArray.some(d => d === this.selectedDate);
-  }
 
   findDate() { // Since your date is in string
     const d = new Date(this.selectedDate).getTime();
@@ -163,31 +249,43 @@ export class TimesComponent implements OnInit {
     return dates.find(_d => _d === d);
   }
 
-
-
-  dateToggle() {
-    if (this.findDate()) this.unBlock();
-    else this.blackOut();
+  dateToggle(event) {
+    console.log(event)
+    this.findDate() ? this.unBlock() : this.blackOut();
   }
 
   blackOut() {
     const date = this.selectedDate.toString()
-    this.scheduleService.blockDate(date)
+    this.scheduleService.blockDate(date);
+    this.enable = true;
   }
 
   unBlock() {
     const key = this.selectedDateKey;
-    this.scheduleService.openDate(key)
+    this.scheduleService.openDate(key);
+    this.enable = this.findDate() ? true : false;
+
   }
 
 
-
-
   select(event) {
-     this.scheduleService.updateDate(event.$value);
-     this.scheduleService.openDate(event.$key);
+    this.selectedDateKey = event.$key;
 
-     console.log(this.selectedDateKey, this.enable)
+    this.scheduleService.updateDate(event.$value);
+    this.enable = this.findDate() ? true : false;
+
+    console.log(this.selectedDateKey, this.enable)
+  }
+
+  updateDate(date) {
+    this.scheduleService.updateDate(date);
+  }
+
+  handleDateChange(event) {
+    this.enable = this.findDate() ? true : false;
+    this.updateDate(event);
+    // this.dateToggle(this.enable);
+    console.log(this.enable, this.selectedDate, event)
   }
 
   ngOnDestroy() {

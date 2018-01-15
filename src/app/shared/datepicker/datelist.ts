@@ -31,9 +31,11 @@ import { ISlimScrollOptions } from 'ngx-slimscroll';
       <input class="topbar-search" placeholder="search"/>
     </div>
     <div class="main-calendar-container" >
-      <div class="main-calendar-years" >
+      <div class="main-calendar-years" slimScroll [options]="scrollOptions" >
         <ul class="year-unit" >
-          <li class='date-item' *ngFor="let date of dates; let i = index;" [ngClass]="{ 'is-selected': !date }" (click)='select.emit(date)'>{{ date.$value | date:'yMMMMEEEEd' }}</li>
+          <li class='date-item' *ngFor="let date of dates; let i = index;"
+                 [ngClass]="{'is-selected': checkedOption === i}"
+                 (click)=' checkedOption = i; select.emit(date);'>{{ date.$value | date:'yMMMMEEEEd' }}</li>
         </ul>
       </div>
     </div>
@@ -87,13 +89,10 @@ export class DatelistComponent implements OnInit {
   locale: object;
 
 
-
-
-
   constructor(private elementRef: ElementRef) {
     this.scrollOptions = {
       barBackground: '#DFE3E9',
-      gridBackground: '#FFFFFF',
+      gridBackground: 'transparent',
       barBorderRadius: '3',
       gridBorderRadius: '3',
       barWidth: '6',

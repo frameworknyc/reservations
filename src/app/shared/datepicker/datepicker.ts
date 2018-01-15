@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ElementRef, HostListener, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, ElementRef, HostListener, forwardRef, Output, EventEmitter } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import {
   startOfMonth,
@@ -17,7 +17,8 @@ import {
   format,
   getDay,
   subDays,
-  setDay
+  setDay,
+  isPast
 } from 'date-fns';
 import { ISlimScrollOptions } from 'ngx-slimscroll';
 
@@ -130,6 +131,7 @@ export class DatepickerComponent implements ControlValueAccessor, OnInit, OnChan
    * Datepicker dropdown position
    */
   @Input() position = 'bottom-right';
+
 
   private positions = ['bottom-left', 'bottom-right', 'top-left', 'top-right'];
 
@@ -258,6 +260,10 @@ export class DatepickerComponent implements ControlValueAccessor, OnInit, OnChan
 
     if (maxDateSet && (timestamp > this.options.maxDate.valueOf())) {
       return false;
+    }
+
+    if (isPast(date)) {
+      return true;
     }
 
     return true;

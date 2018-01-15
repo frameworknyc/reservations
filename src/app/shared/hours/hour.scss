@@ -527,8 +527,11 @@ p {
   margin-right: 22px;
   font-size: 14px;
   font-family: inherit;
-  color: #000;
+  color: #36384A;
   text-align: center
+}
+.estimate-project__checkbox .button {
+  color: #36384A;
 }
 
 @media (min-width:768px) {
@@ -592,17 +595,18 @@ p {
 
 
 .disabled .estimate-project__checkbox__text {
-  color: rgba(0, 0, 0, 0.09);
+  opacity: .5
 }
 .estimate-project__checkbox.disabled {
-  border: none;
+  border: 1px solid #fafafa;
 }
 
 .disabled .hs-image-widget {
   opacity: 0.3;
 }
 .disabled {
-  border: none !important;
+  // border: none !important;
+  // opacity: .5;
   background-color: #fafafa;
   pointer-events: none !important;
   cursor: not-allowed !important;
